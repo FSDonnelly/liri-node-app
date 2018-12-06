@@ -6,8 +6,8 @@ exports.spotify = {
   secret: process.env.SPOTIFY_SECRET
 };
 // Bands in Town Artist Events url
-var bandUrl = `https://rest.bandsintown.com/artists/${artist}/events?app_id=codingbootcamp`
+// var bandUrl = `https://rest.bandsintown.com/artists/${artist}/events?app_id=codingbootcamp`
 // Omdb api url
-var movieUrl = `http://www.omdbapi.com/?t=${userText}&y=&plot=short&apikey=trilogy`
+// var movieUrl = `http://www.omdbapi.com/?t=${userText}&y=&plot=short&apikey=trilogy`
 
 
