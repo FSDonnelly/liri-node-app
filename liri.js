@@ -1,42 +1,197 @@
 require("dotenv").config();
-// access spotify
-// require("./keys.js").config();
-// var spotify = new Spotify(keys.spotify);
-// console.log(keys.spotify);
-// including the fs or filesystem package
+// Intialize File System
 var fs = require("fs");
-
+//Local Files
+// var keys = require("./keys.js");
+//NPM Packages
 var axios = require("axios");
-// take in a user input
-var userInput = process.argv[2];
-var userText = "";
-for(var i = 3; i < process.argv.length; i++) {
-    userText += process.argv[i] + "";
+var moment = require("moment");
+var request = require("request");
+var inquirer = require("inquirer");
+// var Spotify = require('node-spotify-api');
+
+// var spotify = new Spotify({
+//  id: process.env.SPOTIFY_ID,
+//  secret: process.env.SPOTIFY_SECRET
+// });
+
+// spotify.search({ type: 'track', query: 'All the Small Things' }, function(err, data) {
+//  if (err) {
+//    return console.log('Error occurred: ' + err);
+//  }
+
+// console.log(data);
+// })
+
+
+//Creates an object to auth Spotify queries
+// var spotify = new Spotify(keys.spotify);
+
+//Global Variables
+var defaultMusic = "The Sign";
+var defaultMovie = "Mr. Nobody";
+
+var action = process.argv[2];
+var value = process.argv[3];
+
+switch (action) {
+//   case "spotify-this-song":
+//     mySpotify();
+//     break;
+  case "movie-this":
+    myMovie();
+    break;
+    case "concert-this":
+    myBand();
+    break;
+  case "do-what-it-says":
+    random();
+    break;
+  default: // Adds user instructions to re-select an available action
+  console.log("Please select an action request listed below:");
+  console.log("concert-this, spotify-this-song, movie-this, do-what-it-says");
+    break;
 }
-// Bands in Town Artist Events url
-var bandUrl = `https://rest.bandsintown.com/artists/${userText}/events?app_id=codingbootcamp`;
-console.log(bandUrl);
-// Omdb api url
-var movieUrl = `http://www.omdbapi.com/?t=${userText}&y=&plot=short&apikey=trilogy`;
-console.log(movieUrl);
-if (userInput === "movie-this") {
-    // hit the url with axios 
-    axios.get(movieUrl).then(function(response){
-        // and display data back from a movie
-        console.log(response.data);
-       
-        
+// Spotify API 
+// -------------------------------------------------------------------
+
+// function mySpotify() {
+
+//     spotifyInfo.search({ type: 'track', query: value, limit: '1'}, function(err, data) {
+//       if (err) {
+//         console.log('Error occured: ' + err);
+//       } else {
+//         // Returns JSON info for selected track
+//         // console.log(JSON.stringify(data, null, 2));
+  
+//         console.log("\nArtist: " + JSON.stringify(data.tracks.items[0].artists[0].name, null, 2) + "\n");
+//         console.log("Song Title: " + JSON.stringify(data.tracks.items[0].name) + "\n");
+//         console.log("Album " + JSON.stringify(data.tracks.items[0].album.name) + "\n");
+//         console.log("Link: " + JSON.stringify(data.tracks.itmes[0].album.external_urls));
+//       }
+//     });
+//   };
+  // MOVIE Omdb API
+// -------------------------------------------------------------------
+
+function myMovie() {
+
+    // Take in the command line arguments
+    var nodeArgs = process.argv;
+    
+    // Create an empty string for holding the movie name
+    var movieName = "";
+    
+    // Capture all the words in the movie name (ignore first 3 node arguments
+    for (var i = 3; i < nodeArgs.length; i++) {
+    
+    // If TRUE, Build a string with the movie name.
+    if (i > 3 && i < nodeArgs.length) {
+      movieName = movieName + "+" + nodeArgs[i];
+    } else {
+      movieName += nodeArgs[i];
+     }
+    }
+    
+    // Create URL query variable to store URL to request JSON from OMDB API
+    var queryUrl = `http://www.omdbapi.com/?t=${movieName}&y=&plot=short&apikey=trilogy&r=json&tomatoes=true`;
+    
+    // Run request to OMDB API with URL varible
+    request(queryUrl, function(error, response, body) {
+    
+      // If the request was successful ... 
+      if (!error && response.statusCode === 200) {
+    
+        var body = JSON.parse(body);
+    
+        // Then log the body details from the OMDB API
+          console.log("\nMovie Title: " + body.Title + "\n ");
+          console.log("Year Released: " + body.Released + "\n ");
+          console.log("Rating: " + body.Rated + "\n ");
+          console.log("Production Country: " + body.Country + "\n ");
+          console.log("Language: " + body.Language + "\n ");
+          console.log("Plot: " + body.Plot + "\n ");
+          console.log("Actors: " + body.Actors + "\n ");
+      } else {
+        console.log(error);
+      };
     });
-} else if (userInput === "concert-this") {
-    axios.get(bandUrl).then(function(response){
-// and display data back from a band
-console.log(response.data);
-});
-} else if (userInput === "spotify-this-song") {
-    axios.get(spotify).then(function(response){
-// and display data back from a band
-console.log(response.data);
-});
-} else {
-    console.log("No command found!");
-}
+    }
+    
+     // Concert API
+// -------------------------------------------------------------------
+
+function myBand() {
+
+    // Take in the command line arguments
+    var nodeArgs = process.argv;
+    
+    // Create an empty string for holding the movie name
+    var bandName = "";
+    
+    // Capture all the words in the movie name (ignore first 3 node arguments
+    for (var i = 3; i < nodeArgs.length; i++) {
+    
+    // If TRUE, Build a string with the movie name.
+    if (i > 3 && i < nodeArgs.length) {
+      bandName = bandName + "+" + nodeArgs[i];
+    } else {
+      bandName += nodeArgs[i];
+     }
+    }
+    
+    // Create URL query variable to store URL to request JSON from Concert API
+    var bandUrl = `https://rest.bandsintown.com/artists/${bandName}/events?app_id=codingbootcamp`;
+    
+    // Run request to Concert API with URL varible
+    request(bandUrl, function(error, response, body) {
+        
+      // If the request was successful ... 
+      if (!error && response.statusCode === 200) {
+    
+        var body = JSON.parse(body);
+    
+        // and display data back from a band
+        console.log(response)
+        console.log("\nName of the Venue: " + body.venue.name + "\n ");
+        console.log("Location: " + body.venue.city + "\n ");
+        console.log("Date of Event: " + body.datetime + "\n ");
+      } else {
+        console.log(error);
+      };
+    });
+    }
+    
+    // DO-WHAT-IT-SAYS 
+    // -------------------------------------------------------------------
+    // Function takes the data from my random.txt file and 
+    // passes it as a search value in the Spotify function
+    
+    function random() {
+    
+      fs.readFile('./random.txt', 'utf8', function(err, data) {
+        if (err) {
+          return console.log(err);
+        }
+        else {
+          console.log(data);
+    
+          //Converst data in text file into array
+          var arr = data.split(",");
+          value = arr[1];
+            // If command name at index[0] matches the string, invoke the function
+            if(arr[0] == "movie-this") {
+              myMovie(value);
+            }
+            else if (arr[0] == "spotify-this-song") {
+              mySpotify(value);
+            }
+            else if (arr[0] == "concert-this") {
+            myBand(value);
+        }
+      }
+    }); 
+    };
+    
+    
+    
