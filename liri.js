@@ -83,7 +83,7 @@ function mySpotify() {
             console.log("\nArtist: " + JSON.stringify(data.tracks.items[0].artists[0].name, null, 2) + "\n");
             console.log("Song Title: " + JSON.stringify(data.tracks.items[0].name) + "\n");
             console.log("Album " + JSON.stringify(data.tracks.items[0].album.name) + "\n");
-            console.log("Link: " + JSON.stringify(data.tracks.itmes.external_urls.spotify));
+            console.log("Link: " + JSON.stringify(data.tracks.itmes.external_urls.spotify) + "\n");
         }
     });
 };
