@@ -1,6 +1,7 @@
 # liri-node-app
 LIRI Bot
 
+Screenshots of working commands and the results can be found in the "Screenshots" folder in this repository.
 
 Overview
 
