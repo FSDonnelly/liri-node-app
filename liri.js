@@ -24,8 +24,6 @@ var spotify = new Spotify({
 // })
 
 
-//Creates an object to auth Spotify queries
-// var spotify = new Spotify(keys.spotify);
 
 //Global Variables
 var defaultMusic = "The Sign";
@@ -62,7 +60,9 @@ function mySpotify() {
 
     // Create an empty string for holding the movie name
     var trackName = "";
-
+    if(process.argv[3] === ""){
+        trackName = defaultMusic;
+    }
     // Capture all the words in the movie name (ignore first 3 node arguments
     for (var i = 3; i < nodeArgs.length; i++) {
 
@@ -101,7 +101,7 @@ function myMovie() {
     // Capture all the words in the movie name (ignore first 3 node arguments
     for (var i = 3; i < nodeArgs.length; i++) {
 
-        if (process.argv[2]==="movie-this"  && process.argv === 3){
+        if (process.argv[2]==="movie-this"  &&  process.argv[3] === ""){
             movieName = defaultMovie;
         
         // If TRUE, Build a string with the movie name.
@@ -191,7 +191,7 @@ function myBand() {
 // DO-WHAT-IT-SAYS 
 // -------------------------------------------------------------------
 // Function takes the data from my random.txt file and 
-// passes it as a search value in the Spotify function
+// passes it as a search value in the corresponding function
 
 function random() {
 
@@ -202,17 +202,17 @@ function random() {
         else {
             console.log(data);
 
-            //Converst data in text file into array
+            //Converts data in text file into array
             var arr = data.split(",");
-            value = arr[1];
+            var value = arr[1];
             // If command name at index[0] matches the string, invoke the function
-            if (arr[0] == "movie-this") {
+            if (arr[0] === "movie-this") {
                 myMovie(value);
             }
-            else if (arr[0] == "spotify-this-song") {
+            else if (arr[0] === "spotify-this-song") {
                 mySpotify(value);
             }
-            else if (arr[0] == "concert-this") {
+            else if (arr[0] === "concert-this") {
                 myBand(value);
             }
         }
