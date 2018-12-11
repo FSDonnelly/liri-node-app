@@ -101,7 +101,7 @@ function myMovie() {
     // Capture all the words in the movie name (ignore first 3 node arguments
     for (var i = 3; i < nodeArgs.length; i++) {
 
-        if (process.argv[2]==="movie-this"  &&  process.argv[3] === ""){
+        if (nodeArgs[2]==="movie-this"  &&  nodeArgs[3] === ""){
             movieName = defaultMovie;
         
         // If TRUE, Build a string with the movie name.
